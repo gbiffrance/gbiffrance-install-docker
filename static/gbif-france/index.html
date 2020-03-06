@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;charset=UTF-8">
+		<title>Atlas of Living France | GBIF France</title>
+		<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<!-- Optional theme -->
+		<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="css/theme.css"></script>
+		<link rel="icon" href="picture/favicon.ico" />
+		<!-- Latest compiled and minified JavaScript -->
+
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			function totalRecord(){
+				var xhrs = new XMLHttpRequest();
+				xhrs.open('GET', 'http://recherche-ws.gbif.fr/occurrences/search?q=*:*&facet=off&pageSize=0');
+				xhrs.addEventListener('readystatechange', function() {
+    				if (xhrs.readyState === 4) {
+    					console.log(xhrs.responseText);
+        				var response = JSON.parse(xhrs.responseText);
+        				// totalRecord = lisibilite_nombre(response.totalRecords);
+        				// $('#totalRecord').text(totalRecord);
+        				// console.log(totalRecord);
+    				}
+				}, false);
+				xhrs.send(null);
+			}
+			function totalDataset(){
+				var xhr = new XMLHttpRequest();
+				xhr.open('GET', 'http://metadonnee.gbif.fr/ws/dataResource');
+				xhr.addEventListener('readystatechange', function() {
+    				if (xhr.readyState === 4) {
+        				var response = JSON.parse(xhr.responseText);
+        				totalDataset = lisibilite_nombre(response.length);
+        				$('#totalDataset').text(totalDataset);
+    				}
+				}, false);
+				xhr.send(null);
+			}
+			function lisibilite_nombre(nbr)
+			{
+				var nombre = ''+nbr;
+				var retour = '';
+				var count=0;
+				for(var i=nombre.length-1 ; i>=0 ; i--)
+				{
+					if(count!=0 && count % 3 == 0)
+						retour = nombre[i]+' '+retour ;
+					else
+						retour = nombre[i]+retour ;
+					count++;
+				}
+				return retour;
+			}
+		</script>
+	</head>
+
+	<body>
+		<div id="header" class="row-fluid">
+			<a href="http://www.gbif.fr"><img src="picture/header_gbif_site.png" alt="Le GBIF France"></a>
+		</div>
+		<div class="navbar-header format">	
+			<div class="contenu_page">
+				<div class="row">
+					<div class="menu_navigation col-xs-12 col-sm-8">
+						<ul class="menu nav">
+							<li class="dropdown">
+								<a id="sinformer" class="dropdown-toggle" data-target="#" href="http://www.gbif.fr/page/infos/quest-ce-que-le-gbif" role="button">
+									s'informer 
+									<span class="caret"></span>	
+								</a>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="http://www.gbif.fr/page/infos/quest-ce-que-le-gbif">GBIF</a></li>
+									<li><a href="http://www.gbif.fr/page/infos/presentation-du-gbif-france">Point Nodal Fran&ccedilais</a></li>
+									<li><a href="http://www.gbif.fr/page/infos/actions-du-point-nodal">Actions du point nodal</a></li>
+									<li><a href="http://www.gbif.fr/actualites">Actualit&eacutes</a></li>
+									<li><a href="http://www.gbif.fr/agenda">Agenda</a></li>
+									<li><a href="http://www.gbif.fr/page/infos/foire-aux-questions">Foire aux Questions</a></li>
+									<li><a href="http://www.gbif.fr/newsletter/subscriptions">Inscriptions aux Newsletters</a></li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a id="contribuer" class="dropdown-toggle" data-target="#" href="http://www.gbif.fr/page/contrib/connecter-des-donnees-au-gbif" role="button">
+									contribuer
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="http://www.gbif.fr/page/contrib/connecter-des-donnees-au-gbif">Connecter des donn&eacutees au GBIF</a></li>
+									<li><a href="http://www.gbif.fr/page/contrib/publier-un-datapaper">Publier un datapaper</a></li>
+									<li><a href="http://www.gbif.fr/page/contrib/numerisation-des-donnees">Num&eacuterisation des donn&eacutees</a></li>
+									<li><a href="http://www.gbif.fr/page/contrib/metadonnees">M&eacutetadonn&eacutees</a></li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a id="consulter" class="dropdown-toggle" data-target="#" href="http://portail.gbif.fr" role="button">
+									consulter
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="http://@@HUBS.GBIF.FR@@/france">Acc&egraves au portail fran&ccedilais du GBIF</a></li>
+									<li><a href="http://www.gbif.org" target="_blank">Acc&egraves au portail international du GBIF</a></li>
+									<li><a href="http://@@HUBS.GBIF.FR@@/collectory/admin">Acc&egraves à l'administration du portail français du GBIF</a></li>
+								</ul>	
+							</li>
+
+							<li class="dropdown">
+								<a id="utiliser" class="dropdown-toggle" data-target="#" href="http://www.gbif.fr/page/utiliser/exemples-dutilisation-des-donnees" role="button">
+									utiliser
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="http://www.gbif.fr/page/utiliser/exemples-dutilisation-des-donnees">Exemples d'utilisation des donn&eacutees du GBIF</a></li>
+								</ul>
+							</li>
+
+							<li class="dropdown">
+								<a id="ressources" class="dropdown-toggle" data-target="#" href="http://www.gbif.fr/page/ressources/documentation" role="button">
+									ressources
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="http://www.gbif.fr/page/ressources/documentation">Documentation</a></li>
+									<li><a href="http://www.gbif.fr/page/ressources/rapports-comptes-rendus">Rapports et comptes rendus</a></li>
+									<li><a href="http://www.gbif.fr/page/ressources/guides">Guides GBIF/Manuels</a></li>
+									<li><a href="http://www.gbif.fr/page/ressources/data-papers">Data Papers</a></li>
+									<li><a href="http://www.gbif.fr/page/ressources/posters">Posters</a></li>
+									<li><a href="http://www.gbif.fr/page/ressources/liens">Sites Internet utiles</a></li>
+									<li><a href="http://www.gbif.fr/page/ressources/outils-du-gbif">Outils du GBIF</a></li>
+									<li><a href="http://www.gbif.fr/page/ressources/publication-du-gbif-en-anglais">Publication</a></li>
+								</ul>
+							</li>
+
+							<li class="dropdown">
+								<a id="partenaires" class="dropdown-toggle" data-target="#" href="http://www.gbif.fr/page/partenaires" role="button">
+									partenaires
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="http://www.gbif.fr/page/partenaires">Organismes de tutelle</a></li>
+									<li><a href="http://www.gbif.fr/page/partenaires/partenaires">Partenaires</a></li>
+									<li><a href="http://www.gbif.fr/page/partenaires/fournisseurs-de-donnees">Fournisseurs de donn&eacutees</a></li>
+								</ul>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>	
+
+		
+		<div class="container">
+			<div class="content format">
+				<div class="row">
+					<div class="currentdate">
+						<div class="region region-currentdate">
+							<div id="block-block-6" class="block block-block clearfix">
+								<script language="javascript">
+								today = new Date();
+								var options = {
+									weekday: "long", year: "numeric", month: "long", day: "2-digit"
+								};
+								document.write(today.toLocaleDateString("fr-fr", options));
+								</script>
+							</div>
+						</div>
+					</div>
+					
+					<div class="block-breadcrumb col-sm-6 col-md-6">
+						<ul class="breadcrumb">
+							<li>
+								<a href="http://www.gbif.fr">Accueil</a>
+								<span class="divider">/</span>
+							</li>
+							<li>
+								<a href="http://@@HUBS.GBIF.FR@@/france">Consulter</a>
+								<span class="divider">/</span>
+							</li>
+							<li>
+								Portail français du GBIF
+							</li>
+						</ul>
+					</div>
+					
+				</div>
+
+				<div class="row col-xs-12 col-sm-12">
+				
+					<h2 class="search">Les donn&eacute;es fran&ccedil;aises sur la biodiversit&eacute;</h2>
+						<p>
+
+						Le portail français du GBIF ouvre l’accès aux données primaires sur la
+		biodiversité fournies par des institutions françaises. Ces données d’occurrences
+		d’espèces sont issues de collections ou d’observations de terrain et ont une distribution géographique mondiale.
+						</p>
+					<div class="col-md-8 col-md-offset-2">
+						<form action="http://@@HUBS.GBIF.FR@@/france-hub/occurrences/search?#tab_mapView" method="get" role="search">
+							<h2 id="input-group-h2"><span class="glyphicon glyphicon-question-sign brown"></span>  Consulter les <a href="http://@@HUBS.GBIF.FR@@/france-hub/occurrences/search?#tab_mapView" method="get" id="total-record-link"><span id="totalRecord" class="pink"></a></span> occurrences</h2>
+							<script type="text/javascript">totalRecord();</script>
+
+							<input type="text" class="form-control input-lg" placeholder="Nom scientifique, nom vernaculaire, etc." name="taxa">
+							<div class="row">
+								<div class="col-md-3"></div>
+								<div class="col-md-3">
+									<button id="first-search" class="btn btn-default search-occurrence btn-lg" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+
+								</div>
+								<div class="col-md-3">
+									<a class="btn btn-default search-occurrence btn-lg" href="http://@@HUBS.GBIF.FR@@/france-hub/search#advanceSearch">Recherche avancée</a>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+		
+
+
+				<div id="thumbnail-search" class="row">
+					<div class="col-sm-6 col-md-4">
+						<div class="thumbnail">
+							<h2 class="thumbnail-2">Les collections</h2>
+							<a href="http://@@HUBS.GBIF.FR@@/collectory">
+								<img src="picture/institution.png" alt="Institution, Collection et Projets">
+							</a>
+							<div class="caption">
+								<p>Informations sur les collections françaises sur la biodiversité. Vous retrouvez la description, les contacts et autres informations pratiques sur les acteurs français principaux de la biodiversité.</p>
+								<!--		<p><a href="http://10.1.1.2/collectory/" target="_blank" id="btn-search-meta" class="btn btn-primary" role="button">Accéder aux métadonnées</a></p> -->
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-4">
+						<div class="thumbnail">
+							<h2 class="thumbnail-2"><span id="totalDataset"></span> Jeux de données</h2>
+							<script type="text/javascript">totalDataset();</script>
+							<a href="http://@@HUBS.GBIF.FR@@/collectory/datasets"><img src="picture/jeu-donnees2.png" alt="Jeux de données"></a>
+							<div class="caption">
+								<p>Accès aux données d'occurrences et informations sur les jeux de données publiés par les institutions ou collections participant au GBIF (licence, citation, etc.)</p>
+								<!--	<p><a href="http://10.1.1.2/collectory/datasets" target="_blank" id="btn-search-dataset" class="btn btn-primary" role="button">Accéder aux jeux de données</a></p> -->
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-4">
+						<div class="thumbnail">
+							<h2 class="thumbnail-2">Portail spatial</h2>
+							<a href="http://@@HUBS.GBIF.FR@@/spatial"><img src="picture/jeu-donnees3.jpg" alt="Portail spatial"></a>
+							<div class="caption">
+								<p>Portail spatial du GBIF France.</p>
+								
+								<!--	<p><a href="http://10.1.1.2/collectory/datasets" target="_blank" id="btn-search-explorer" class="btn btn-primary" role="button">Explorer votre zone</a></p> -->
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="access" class="row">
+					<div class="col-sm-6 col-md-4">
+						<p><a href="http://@@HUBS.GBIF.FR@@/collectory" id="btn-search-meta" class="btn btn-primary bouton" role="button">Accéder aux collections</a></p>
+
+					</div>
+					<div class="col-sm-6 col-md-4">
+						<p><a href="http://@@HUBS.GBIF.FR@@/collectory/datasets" id="btn-search-dataset" class="btn btn-primary bouton" role="button">Accéder aux jeux de données</a></p>
+						
+					</div>
+					<div class="col-sm-6 col-md-4">
+						
+						<p><a href="http://@@HUBS.GBIF.FR@@/spatial" id="btn-search-explorer" class="btn btn-primary bouton" role="button">Explorer les occurrences</a></p>
+
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-3 vcenter">
+						<div>	<a href="http://www.ala.org.au/" target="_blank">
+							<img src="picture/ala-white.png" class="img-responsive center-block" alt="Atlas of Living Australia">
+						</a> </div>
+					</div><!--
+					--><div class="col-md-3 vcenter">
+						<a href="https://crowdin.com/" target="_blank">
+							<img src="picture/crowdin-white.png" class="img-responsive center-block" alt="Crowdin">
+						</a>
+					</div><!--
+					--><div class="col-md-3 vcenter">
+						<a href="http://www.gbif.org/" target="_blank">
+							<img src="picture/GBIF-2015-full.jpg" class="img-responsive center-block" alt="GBIF">
+						</a>
+					</div><!--
+					--><div class="col-md-3 vcenter">
+						<a href="http://www.gbif.fr/" target="_blank">
+							<img src="picture/gbif-fr.png" class="img-responsive center-block" alt="GBIF France">
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div id="footer">
+			<div class="region-footer">
+				<div class="contenu_page">
+					<ul class="social_icons">
+						<li>
+							<a target="_blank" href="http://twitter.com/gbiffrance" title="Rejoignez sous sur Twitter !">
+								<img width="28" height="28" src="picture/Logo-Twitter-white.png" alt="twitter logo">
+							</a>
+						</li>
+						<li>
+							<a target="_blank" title="Page Facebook du GBIF" href="https://www.facebook.com/gbifnews">
+								<img width="28" height="28" src="picture/Logo-Facebook.png" alt="Facebook logo">
+							</a> 
+						</li>
+					</ul>
+					<div id="block-menu-menu-links-footer">
+						<ul class="menu nav">
+							<li ><a  target="_blank" title="" href="http://www.gbif.fr">Accueil</a></li>
+							<li ><a target="_blank" title="" href="http://www.gbif.fr/contact">Contact</a></li>
+							<li ><a title="" href="http://www.gbif.fr/content/mentions-legales">Mentions l&eacutegales</a></li>
+							<li ><a href="http://www.gbif.fr/sitemap">Plan du site</a> </li>
+							<li ><a href="http://www.gbif.fr/user">Administration</a> </li>
+						</ul>
+					</div> 
+					<address class="footer-margin"> 
+						<p>GBIF FRANCE ● MNHN G&eacuteologie ● 43 rue Buffon CP 48 &#150; 75005 Paris  &#150; France  &#150; <span style="line-height:1.6">T&eacutel. : +33 (0)1 40 79 80 65</span></p>
+					</address> 
+				</div>
+			</div>
+		</div> 
+	</body>
+	</html>

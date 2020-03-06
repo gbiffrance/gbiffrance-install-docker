@@ -1,0 +1,12 @@
+/.idea/
+/collectory/collectory.war
+/biocacheservice/biocache-service.war
+/biocachebackend/biocache.zip
+/biocachehub/ala-hub.war
+/bieindex/bie-index.war
+/solr7/lib/jts-core-*.jar
+/solr7/lib/jts-io-common-*.jar
+/dyntaxa-index/dyntaxa.dwca.zip
+/dyntaxa-index/nameindexer.zip
+/env/.envcollectory
+/env/.htpasswd

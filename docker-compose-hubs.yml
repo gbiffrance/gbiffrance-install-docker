@@ -1,0 +1,165 @@
+version: '3.7'
+
+services:
+
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    ports:
+      - 80:80
+    volumes:
+      - ./env/.htpasswd:/etc/nginx/htpasswd
+      - ./webserver/app_prod.conf:/etc/nginx/conf.d/app.conf:ro
+
+  collectory:
+    image: gbiffrance/ala-collectory:1.0
+    container_name: collectory
+    depends_on:
+      - mysqldb
+    links:
+      - mysqldb
+    environment:
+      - HUBS_HOSTNAME=193.54.101.17
+      - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1056
+    ports:
+      - 1056:1056
+    env_file: ./env/.envcollectory
+    volumes:
+      - data_collectory:/data/ala-collectory
+      - ./config/ala-collectory-config.properties:/tmp/ala-collectory-config.properties:ro
+    command: /bin/ash -c "envsubst < /tmp/ala-collectory-config.properties > /data/ala-collectory/config/ala-collectory-config.properties && catalina.sh run"
+
+  mysqldb:
+    image: mysql:5.7
+    env_file: ./env/.envcollectory
+    container_name: mysqldb
+    volumes:
+      - ./config/my.cnf:/etc/mysql/my.cnf:ro
+      - db_data_collectory:/var/lib/mysql
+
+  biocacheservice:
+    image: gbiffrance/ala-biocacheservice:1.0
+    container_name: biocacheservice
+    external_links:
+      - cassandradb
+      - solr
+    environment:
+      - HUBS_HOSTNAME=193.54.101.17
+      - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
+    volumes:
+      - data_nameindex:/data/lucene/namematching
+      - ./config/biocache-config.properties:/data/biocache/config/biocache-config.properties:ro
+      - ./config/logger-client.properties:/data/logger-client/config/logger-client.properties:ro
+
+  biocachehubfrance:
+    image: gbiffrance/ala-biocachehub:1.0
+    container_name: biocachehubfrance
+    depends_on:
+      - biocacheservice
+    environment:
+      - HUBS_HOSTNAME=193.54.101.17
+      - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
+    volumes:
+      - ./config/france-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
+      - ./config/france-hub-server.xml:/usr/local/tomcat/conf/server.xml:ro
+
+  biocachehubtogo:
+    image: gbiffrance/ala-biocachehub:1.0
+    container_name: biocachehubtogo
+    depends_on:
+      - biocacheservice
+    environment:
+      - HUBS_HOSTNAME=193.54.101.17
+      - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
+    volumes:
+      - ./config/togo-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
+      - ./config/togo-hub-server.xml:/usr/local/tomcat/conf/server.xml:ro
+
+  biocachehubbenin:
+    image: gbiffrance/ala-biocachehub:1.0
+    container_name: biocachehubbenin
+    depends_on:
+      - biocacheservice
+    environment:
+      - HUBS_HOSTNAME=193.54.101.17
+      - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
+    volumes:
+      - ./config/benin-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
+      - ./config/benin-hub-server.xml:/usr/local/tomcat/conf/server.xml:ro
+
+  nameindex:
+    image: gbiffrance/ala-dyntaxaindex:1.0
+    command: /bin/ash
+    container_name: nameindex
+    volumes:
+      - data_nameindex:/data/lucene/namematching
+
+  biocachebackend:
+    image: gbiffrance/ala-biocachebackend:1.0
+    container_name: biocachebackend
+    external_links:
+      - cassandradb
+      - solr
+    command: tail -f /dev/null
+    extra_hosts:
+      - "cassandradb:192.168.0.11"
+      - "solr:192.168.0.10"
+    environment:
+      - BIOCACHE_MEMORY_OPTS=-Xmx10g -Xms10g -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1055
+    ports:
+      - 1055:1055
+    volumes:
+      - data_nameindex:/data/lucene/namematching
+      - data_biocachebackend:/data
+      - ./config/blacklistMediaUrls.txt:/data/biocache/config/blacklistMediaUrls.txt
+      - ./config/biocache-config.properties:/data/biocache/config/biocache-config.properties:ro
+
+  static:
+    image: nginx:alpine
+    volumes:
+      - ./static:/usr/share/nginx/html
+    container_name: static
+
+  bieindex:
+    image: gbiffrance/ala-bieindex:1.0
+    container_name: bieindex
+    environment:
+      - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true
+    volumes:
+      - ./config/bie-index-config.properties:/data/bie-index/config/bie-index-config.properties
+      - data_bieindex:/data
+    external_links:
+      - solr
+
+volumes:
+  data_collectory:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/volumes/data_collectory
+  db_data_collectory:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/volumes/db_data_collectory
+  data_nameindex:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/volumes/data_nameindex
+  data_biocachebackend:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/volumes/data_biocachebackend
+  data_bieindex:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/volumes/data_bieindex
+
