@@ -7,9 +7,12 @@ services:
     container_name: webserver
     ports:
       - 80:80
+    environment:
+      - HUBS_HOSTNAME=portail2.gbif.fr
+    command: /bin/sh -c "envsubst '$${HUBS_HOSTNAME}' < /tmp/app.conf > /etc/nginx/conf.d/app.conf && exec nginx -g 'daemon off;'"
     volumes:
       - ./env/.htpasswd:/etc/nginx/htpasswd
-      - ./webserver/app_prod.conf:/etc/nginx/conf.d/app.conf:ro
+      - ./webserver/app.conf:/tmp/app.conf:ro
 
   collectory:
     image: gbiffrance/ala-collectory:1.0
@@ -19,7 +22,7 @@ services:
     links:
       - mysqldb
     environment:
-      - HUBS_HOSTNAME=193.54.101.17
+      - HUBS_HOSTNAME=portail2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1056
     ports:
       - 1056:1056
@@ -40,11 +43,11 @@ services:
   biocacheservice:
     image: gbiffrance/ala-biocacheservice:1.0
     container_name: biocacheservice
-    external_links:
-      - cassandradb
-      - solr
+    extra_hosts:
+      - "cassandradb:192.168.0.11"
+      - "solr:192.168.0.10"
     environment:
-      - HUBS_HOSTNAME=193.54.101.17
+      - HUBS_HOSTNAME=portail2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - data_nameindex:/data/lucene/namematching
@@ -57,7 +60,7 @@ services:
     depends_on:
       - biocacheservice
     environment:
-      - HUBS_HOSTNAME=193.54.101.17
+      - HUBS_HOSTNAME=portail2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - ./config/france-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
@@ -69,7 +72,7 @@ services:
     depends_on:
       - biocacheservice
     environment:
-      - HUBS_HOSTNAME=193.54.101.17
+      - HUBS_HOSTNAME=portail2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - ./config/togo-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
@@ -81,7 +84,7 @@ services:
     depends_on:
       - biocacheservice
     environment:
-      - HUBS_HOSTNAME=193.54.101.17
+      - HUBS_HOSTNAME=portail2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - ./config/benin-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
@@ -97,9 +100,6 @@ services:
   biocachebackend:
     image: gbiffrance/ala-biocachebackend:1.0
     container_name: biocachebackend
-    external_links:
-      - cassandradb
-      - solr
     command: tail -f /dev/null
     extra_hosts:
       - "cassandradb:192.168.0.11"

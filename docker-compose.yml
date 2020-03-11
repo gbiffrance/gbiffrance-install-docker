@@ -7,9 +7,12 @@ services:
     container_name: webserver
     ports:
       - 80:80
+    environment:
+      - HUBS_HOSTNAME=hubs.gbif.fr
+    command: /bin/sh -c "envsubst '$${HUBS_HOSTNAME}' < /tmp/app.conf > /etc/nginx/conf.d/app.conf && exec nginx -g 'daemon off;'"
     volumes:
       - ./env/.htpasswd:/etc/nginx/htpasswd
-      - ./webserver/app.conf:/etc/nginx/conf.d/app.conf:ro
+      - ./webserver/app.conf:/tmp/app.conf:ro
 
   cassandradb:
     image: gbiffrance/ala-cassandra:1.0
