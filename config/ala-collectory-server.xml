@@ -126,7 +126,7 @@
       <Host name="localhost"  appBase="webapps"
             unpackWARs="false " autoDeploy="false">
 
-        <Context path="/" docBase="ala-hub.war"/>
+        <Context path="/" docBase="collectory.war"/>
 
         <!-- SingleSignOn valve, share authentication between web applications
              Documentation at: /docs/config/valve.html -->

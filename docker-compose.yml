@@ -7,12 +7,9 @@ services:
     container_name: webserver
     ports:
       - 80:80
-    environment:
-      - HUBS_HOSTNAME=hubs.gbif.fr
-    command: /bin/sh -c "envsubst '$${HUBS_HOSTNAME}' < /tmp/app.conf > /etc/nginx/conf.d/app.conf && exec nginx -g 'daemon off;'"
     volumes:
       - ./env/.htpasswd:/etc/nginx/htpasswd
-      - ./webserver/app.conf:/tmp/app.conf:ro
+      - ./webserver/app.conf:/etc/nginx/conf.d/app.conf:ro
 
   cassandradb:
     image: gbiffrance/ala-cassandra:1.0
@@ -32,14 +29,16 @@ services:
       - 8983:8983
 
   collectory:
-    image: gbiffrance/ala-collectory:1.0
+    image: gbiffrance/ala-collectory:1.1
     container_name: collectory
     depends_on:
       - mysqldb
     links:
       - mysqldb
     environment:
-      - HUBS_HOSTNAME=hubs.gbif.fr
+      - COLLECTORY_HOSTNAME=metadonnees.gbifdev.fr
+      - PORTAL_HOSTNAME=portail.gbifdev.fr
+      - HUBS_HOSTNAME=recherche.gbifdev.fr
       - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1056
     ports:
       - 1056:1056
@@ -47,9 +46,12 @@ services:
     volumes:
       - data_collectory:/data/ala-collectory
       - ./config/ala-collectory-config.properties:/tmp/ala-collectory-config.properties:ro
+      - ./config/ala-collectory-server.xml:/usr/local/tomcat/conf/server.xml:ro
     command: /bin/ash -c "envsubst < /tmp/ala-collectory-config.properties > /data/ala-collectory/config/ala-collectory-config.properties && catalina.sh run"
     extra_hosts:
-      - "hubs.gbif.fr:172.17.0.1"
+      - "metadonnees.gbifdev.fr:172.17.0.1"
+      - "portail.gbifdev.fr:172.17.0.1"
+      - "recherche.gbifdev.fr:172.17.0.1"
 
   mysqldb:
     image: mysql:5.7
@@ -76,49 +78,24 @@ services:
       - ./config/biocache-config.properties:/data/biocache/config/biocache-config.properties:ro
       - ./config/logger-client.properties:/data/logger-client/config/logger-client.properties:ro
     extra_hosts:
-      - "hubs.gbif.fr:172.17.0.1"
+      - "metadonnees.gbifdev.fr:172.17.0.1"
+      - "portail.gbifdev.fr:172.17.0.1"
+      - "recherche.gbifdev.fr:172.17.0.1"
 
-  biocachehubfrance:
+  biocachehub:
     image: gbiffrance/ala-biocachehub:1.0
-    container_name: biocachehubfrance
+    container_name: biocachehub
     depends_on:
       - biocacheservice
     environment:
-      - HUBS_HOSTNAME=hubs.gbif.fr
       - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
-      - ./config/france-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
+      - ./config/dev-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
       - ./config/france-hub-server.xml:/usr/local/tomcat/conf/server.xml:ro
     extra_hosts:
-      - "hubs.gbif.fr:172.17.0.1"
-
-  biocachehubtogo:
-    image: gbiffrance/ala-biocachehub:1.0
-    container_name: biocachehubtogo
-    depends_on:
-      - biocacheservice
-    environment:
-      - HUBS_HOSTNAME=hubs.gbif.fr
-      - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true
-    volumes:
-      - ./config/togo-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
-      - ./config/togo-hub-server.xml:/usr/local/tomcat/conf/server.xml:ro
-    extra_hosts:
-      - "hubs.gbif.fr:172.17.0.1"
-
-  biocachehubbenin:
-    image: gbiffrance/ala-biocachehub:1.0
-    container_name: biocachehubbenin
-    depends_on:
-      - biocacheservice
-    environment:
-      - HUBS_HOSTNAME=hubs.gbif.fr
-      - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true
-    volumes:
-      - ./config/benin-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
-      - ./config/benin-hub-server.xml:/usr/local/tomcat/conf/server.xml:ro
-    extra_hosts:
-      - "hubs.gbif.fr:172.17.0.1"
+      - "metadonnees.gbifdev.fr:172.17.0.1"
+      - "portail.gbifdev.fr:172.17.0.1"
+      - "recherche.gbifdev.fr:172.17.0.1"
 
   nameindex:
     image: gbiffrance/ala-dyntaxaindex:1.0
@@ -128,20 +105,16 @@ services:
       - data_nameindex:/data/lucene/namematching
 
   biocachebackend:
-    image: test/ala-biocachebackend:1.1
+    image: gbiffrance/ala-biocachebackend:0.1
     container_name: biocachebackend
     links:
-      - biocachehubfrance
-      - biocachehubtogo
+      - biocachehub
       - biocacheservice
       - collectory
       - cassandradb
       - solr
     command: tail -f /dev/null
     environment:
-      - HUBS_HOSTNAME=hubs.gbif.fr
-      - CASSANDRA_HOSTNAME=cassandradb
-      - SOLR_HOSTNAME=solr
       - BIOCACHE_MEMORY_OPTS=-Xmx1g -Xms1g -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1055
     ports:
       - 1055:1055
@@ -151,12 +124,12 @@ services:
       - ./config/blacklistMediaUrls.txt:/data/biocache/config/blacklistMediaUrls.txt
       - ./config/biocache-config.properties:/data/biocache/config/biocache-config.properties:ro
     extra_hosts:
-      - "hubs.gbif.fr:172.17.0.1"
+      - "metadonnees.gbifdev.fr:172.17.0.1"
+      - "portail.gbifdev.fr:172.17.0.1"
+      - "recherche.gbifdev.fr:172.17.0.1"
 
   static:
     image: nginx:alpine
-    environment:
-      - HUBS_HOSTNAME=hubs.gbif.fr
     volumes:
       - ./static:/usr/share/nginx/html
     container_name: static
@@ -165,14 +138,35 @@ services:
     image: gbiffrance/ala-bieindex:1.0
     container_name: bieindex
     environment:
-      - HUBS_HOSTNAME=hubs.gbif.fr
-      - SOLR_HOSTNAME=solr
       - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - ./config/bie-index-config.properties:/data/bie-index/config/bie-index-config.properties
       - data_bieindex:/data
     links:
       - solr
+
+  loggerservice:
+    image: gbiffrance/ala-loggerservice:1.0
+    container_name: loggerservice
+    depends_on:
+      - mysqldblogger
+    links:
+      - mysqldblogger
+    environment:
+      - PORTAL_HOSTNAME=portail.gbifdev.fr
+      - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true
+    env_file: ./env/.envlogger
+    volumes:
+      - ./config/logger-config.properties:/tmp/logger-config.properties:ro
+    command: /bin/ash -c "envsubst < /tmp/logger-config.properties > /data/logger/config/logger-config.properties && catalina.sh run"
+
+  mysqldblogger:
+    image: mysql:5.7
+    env_file: ./env/.envlogger
+    container_name: mysqldblogger
+    volumes:
+      - ./config/loggerservicedb:/docker-entrypoint-initdb.d
+      - db_data_loggerservice:/var/lib/mysql
 
 volumes:
   db_data_cassandra:
@@ -182,4 +176,5 @@ volumes:
   data_nameindex:
   data_biocachebackend:
   data_bieindex:
+  db_data_loggerservice:
 

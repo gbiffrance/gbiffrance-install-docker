@@ -8,5 +8,7 @@
 /solr7/lib/jts-io-common-*.jar
 /dyntaxa-index/dyntaxa.dwca.zip
 /dyntaxa-index/nameindexer.zip
+/loggerservice/logger-service.war
 /env/.envcollectory
+/env/.envlogger
 /env/.htpasswd

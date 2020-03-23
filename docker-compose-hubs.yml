@@ -7,22 +7,21 @@ services:
     container_name: webserver
     ports:
       - 80:80
-    environment:
-      - HUBS_HOSTNAME=portail2.gbif.fr
-    command: /bin/sh -c "envsubst '$${HUBS_HOSTNAME}' < /tmp/app.conf > /etc/nginx/conf.d/app.conf && exec nginx -g 'daemon off;'"
     volumes:
       - ./env/.htpasswd:/etc/nginx/htpasswd
-      - ./webserver/app.conf:/tmp/app.conf:ro
+      - ./webserver/app_prod.conf:/etc/nginx/conf.d/app.conf:ro
 
   collectory:
-    image: gbiffrance/ala-collectory:1.0
+    image: gbiffrance/ala-collectory:1.1
     container_name: collectory
     depends_on:
       - mysqldb
     links:
       - mysqldb
     environment:
-      - HUBS_HOSTNAME=portail2.gbif.fr
+      - COLLECTORY_HOSTNAME=metadonnees2.gbif.fr
+      - PORTAL_HOSTNAME=portail2.gbif.fr
+      - HUBS_HOSTNAME=recherche2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1056
     ports:
       - 1056:1056
@@ -30,6 +29,7 @@ services:
     volumes:
       - data_collectory:/data/ala-collectory
       - ./config/ala-collectory-config.properties:/tmp/ala-collectory-config.properties:ro
+      - ./config/ala-collectory-server.xml:/usr/local/tomcat/conf/server.xml:ro
     command: /bin/ash -c "envsubst < /tmp/ala-collectory-config.properties > /data/ala-collectory/config/ala-collectory-config.properties && catalina.sh run"
 
   mysqldb:
@@ -60,7 +60,6 @@ services:
     depends_on:
       - biocacheservice
     environment:
-      - HUBS_HOSTNAME=portail2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - ./config/france-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
@@ -72,7 +71,6 @@ services:
     depends_on:
       - biocacheservice
     environment:
-      - HUBS_HOSTNAME=portail2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - ./config/togo-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
@@ -84,7 +82,6 @@ services:
     depends_on:
       - biocacheservice
     environment:
-      - HUBS_HOSTNAME=portail2.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - ./config/benin-hub-config.properties:/data/ala-hub/config/ala-hub-config.properties:ro
@@ -131,6 +128,29 @@ services:
     external_links:
       - solr
 
+  loggerservice:
+    image: gbiffrance/ala-loggerservice:1.0
+    container_name: loggerservice
+    depends_on:
+      - mysqldblogger
+    links:
+      - mysqldblogger
+    environment:
+      - PORTAL_HOSTNAME=portail2.gbif.fr
+      - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true
+    env_file: ./env/.envlogger
+    volumes:
+      - ./config/logger-config.properties:/tmp/logger-config.properties:ro
+    command: /bin/ash -c "envsubst < /tmp/logger-config.properties > /data/logger/config/logger-config.properties && catalina.sh run"
+
+  mysqldblogger:
+    image: mysql:5.7
+    env_file: ./env/.envlogger
+    container_name: mysqldblogger
+    volumes:
+      - ./config/loggerservicedb:/docker-entrypoint-initdb.d
+      - db_data_loggerservice:/var/lib/mysql
+
 volumes:
   data_collectory:
     driver: local
@@ -162,4 +182,10 @@ volumes:
       type: none
       o: bind
       device: /data/volumes/data_bieindex
+  db_data_loggerservice:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/volumes/db_data_loggerservice
 

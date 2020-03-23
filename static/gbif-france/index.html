@@ -16,7 +16,7 @@
 		<script type="text/javascript">
 			function totalRecord(){
 				var xhrs = new XMLHttpRequest();
-				xhrs.open('GET', 'http://recherche-ws.gbif.fr/occurrences/search?q=*:*&facet=off&pageSize=0');
+				xhrs.open('GET', 'http://recherche2.gbif.fr/occurrences/search?q=*:*&facet=off&pageSize=0');
 				xhrs.addEventListener('readystatechange', function() {
     				if (xhrs.readyState === 4) {
     					console.log(xhrs.responseText);
@@ -30,7 +30,7 @@
 			}
 			function totalDataset(){
 				var xhr = new XMLHttpRequest();
-				xhr.open('GET', 'http://metadonnee.gbif.fr/ws/dataResource');
+				xhr.open('GET', 'http://metadonnees2.gbif.fr/ws/dataResource');
 				xhr.addEventListener('readystatechange', function() {
     				if (xhr.readyState === 4) {
         				var response = JSON.parse(xhr.responseText);
@@ -100,9 +100,9 @@
 									<span class="caret"></span>
 								</a>
 								<ul class="dropdown-menu">
-									<li><a href="http://@@HUBS.GBIF.FR@@/france">Acc&egraves au portail fran&ccedilais du GBIF</a></li>
+									<li><a href="http://portail2.gbif.fr">Acc&egraves au portail fran&ccedilais du GBIF</a></li>
 									<li><a href="http://www.gbif.org" target="_blank">Acc&egraves au portail international du GBIF</a></li>
-									<li><a href="http://@@HUBS.GBIF.FR@@/collectory/admin">Acc&egraves à l'administration du portail français du GBIF</a></li>
+									<li><a href="http://metadonnees2.gbif.fr/admin">Acc&egraves à l'administration du portail français du GBIF</a></li>
 								</ul>	
 							</li>
 
@@ -176,7 +176,7 @@
 								<span class="divider">/</span>
 							</li>
 							<li>
-								<a href="http://@@HUBS.GBIF.FR@@/france">Consulter</a>
+								<a href="http://portail2.gbif.fr">Consulter</a>
 								<span class="divider">/</span>
 							</li>
 							<li>
@@ -197,8 +197,8 @@
 		d’espèces sont issues de collections ou d’observations de terrain et ont une distribution géographique mondiale.
 						</p>
 					<div class="col-md-8 col-md-offset-2">
-						<form action="http://@@HUBS.GBIF.FR@@/france-hub/occurrences/search?#tab_mapView" method="get" role="search">
-							<h2 id="input-group-h2"><span class="glyphicon glyphicon-question-sign brown"></span>  Consulter les <a href="http://@@HUBS.GBIF.FR@@/france-hub/occurrences/search?#tab_mapView" method="get" id="total-record-link"><span id="totalRecord" class="pink"></a></span> occurrences</h2>
+						<form action="http://recherche2.gbif.fr/occurrences/search?#tab_mapView" method="get" role="search">
+							<h2 id="input-group-h2"><span class="glyphicon glyphicon-question-sign brown"></span>  Consulter les <a href="http://recherche2.gbif.fr/occurrences/search?#tab_mapView" method="get" id="total-record-link"><span id="totalRecord" class="pink"></a></span> occurrences</h2>
 							<script type="text/javascript">totalRecord();</script>
 
 							<input type="text" class="form-control input-lg" placeholder="Nom scientifique, nom vernaculaire, etc." name="taxa">
@@ -209,7 +209,7 @@
 
 								</div>
 								<div class="col-md-3">
-									<a class="btn btn-default search-occurrence btn-lg" href="http://@@HUBS.GBIF.FR@@/france-hub/search#advanceSearch">Recherche avancée</a>
+									<a class="btn btn-default search-occurrence btn-lg" href="http://recherche2.gbif.fr/search#advanceSearch">Recherche avancée</a>
 								</div>
 							</div>
 						</form>
@@ -222,12 +222,11 @@
 					<div class="col-sm-6 col-md-4">
 						<div class="thumbnail">
 							<h2 class="thumbnail-2">Les collections</h2>
-							<a href="http://@@HUBS.GBIF.FR@@/collectory">
+							<a href="http://metadonnees2.gbif.fr">
 								<img src="picture/institution.png" alt="Institution, Collection et Projets">
 							</a>
 							<div class="caption">
 								<p>Informations sur les collections françaises sur la biodiversité. Vous retrouvez la description, les contacts et autres informations pratiques sur les acteurs français principaux de la biodiversité.</p>
-								<!--		<p><a href="http://10.1.1.2/collectory/" target="_blank" id="btn-search-meta" class="btn btn-primary" role="button">Accéder aux métadonnées</a></p> -->
 							</div>
 						</div>
 					</div>
@@ -235,61 +234,54 @@
 						<div class="thumbnail">
 							<h2 class="thumbnail-2"><span id="totalDataset"></span> Jeux de données</h2>
 							<script type="text/javascript">totalDataset();</script>
-							<a href="http://@@HUBS.GBIF.FR@@/collectory/datasets"><img src="picture/jeu-donnees2.png" alt="Jeux de données"></a>
+							<a href="http://metadonnees2.gbif.fr/datasets"><img src="picture/jeu-donnees2.png" alt="Jeux de données"></a>
 							<div class="caption">
 								<p>Accès aux données d'occurrences et informations sur les jeux de données publiés par les institutions ou collections participant au GBIF (licence, citation, etc.)</p>
-								<!--	<p><a href="http://10.1.1.2/collectory/datasets" target="_blank" id="btn-search-dataset" class="btn btn-primary" role="button">Accéder aux jeux de données</a></p> -->
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-6 col-md-4">
+					<!--div class="col-sm-6 col-md-4">
 						<div class="thumbnail">
 							<h2 class="thumbnail-2">Portail spatial</h2>
-							<a href="http://@@HUBS.GBIF.FR@@/spatial"><img src="picture/jeu-donnees3.jpg" alt="Portail spatial"></a>
+							<a href="/spatial"><img src="picture/jeu-donnees3.jpg" alt="Portail spatial"></a>
 							<div class="caption">
 								<p>Portail spatial du GBIF France.</p>
-								
-								<!--	<p><a href="http://10.1.1.2/collectory/datasets" target="_blank" id="btn-search-explorer" class="btn btn-primary" role="button">Explorer votre zone</a></p> -->
 							</div>
 						</div>
-					</div>
+					</div-->
 				</div>
 
 				<div id="access" class="row">
 					<div class="col-sm-6 col-md-4">
-						<p><a href="http://@@HUBS.GBIF.FR@@/collectory" id="btn-search-meta" class="btn btn-primary bouton" role="button">Accéder aux collections</a></p>
-
+						<p><a href="http://metadonnees2.gbif.fr" id="btn-search-meta" class="btn btn-primary bouton" role="button">Accéder aux collections</a></p>
 					</div>
 					<div class="col-sm-6 col-md-4">
-						<p><a href="http://@@HUBS.GBIF.FR@@/collectory/datasets" id="btn-search-dataset" class="btn btn-primary bouton" role="button">Accéder aux jeux de données</a></p>
-						
+						<p><a href="http://metadonnees2.gbif.fr/datasets" id="btn-search-dataset" class="btn btn-primary bouton" role="button">Accéder aux jeux de données</a></p>
 					</div>
-					<div class="col-sm-6 col-md-4">
-						
-						<p><a href="http://@@HUBS.GBIF.FR@@/spatial" id="btn-search-explorer" class="btn btn-primary bouton" role="button">Explorer les occurrences</a></p>
-
-					</div>
+					<!--div class="col-sm-6 col-md-4">
+						<p><a href="http://spatial" id="btn-search-explorer" class="btn btn-primary bouton" role="button">Explorer les occurrences</a></p>
+					</div-->
 				</div>
 
 				<div class="row">
 					<div class="col-md-3 vcenter">
 						<div>	<a href="http://www.ala.org.au/" target="_blank">
-							<img src="picture/ala-white.png" class="img-responsive center-block" alt="Atlas of Living Australia">
+							<img src="http://portail2.gbif.fr/picture/ala-white.png" class="img-responsive center-block" alt="Atlas of Living Australia">
 						</a> </div>
 					</div><!--
 					--><div class="col-md-3 vcenter">
 						<a href="https://crowdin.com/" target="_blank">
-							<img src="picture/crowdin-white.png" class="img-responsive center-block" alt="Crowdin">
+							<img src="http://portail2.gbif.fr/picture/crowdin-white.png" class="img-responsive center-block" alt="Crowdin">
 						</a>
 					</div><!--
 					--><div class="col-md-3 vcenter">
 						<a href="http://www.gbif.org/" target="_blank">
-							<img src="picture/GBIF-2015-full.jpg" class="img-responsive center-block" alt="GBIF">
+							<img src="http://portail2.gbif.fr/picture/GBIF-2015-full.jpg" class="img-responsive center-block" alt="GBIF">
 						</a>
 					</div><!--
 					--><div class="col-md-3 vcenter">
 						<a href="http://www.gbif.fr/" target="_blank">
-							<img src="picture/gbif-fr.png" class="img-responsive center-block" alt="GBIF France">
+							<img src="http://portail2.gbif.fr/picture/gbif-fr.png" class="img-responsive center-block" alt="GBIF France">
 						</a>
 					</div>
 				</div>
@@ -304,12 +296,12 @@
 					<ul class="social_icons">
 						<li>
 							<a target="_blank" href="http://twitter.com/gbiffrance" title="Rejoignez sous sur Twitter !">
-								<img width="28" height="28" src="picture/Logo-Twitter-white.png" alt="twitter logo">
+								<img width="28" height="28" src="http://portail2.gbif.fr/picture/Logo-Twitter-white.png" alt="twitter logo">
 							</a>
 						</li>
 						<li>
 							<a target="_blank" title="Page Facebook du GBIF" href="https://www.facebook.com/gbifnews">
-								<img width="28" height="28" src="picture/Logo-Facebook.png" alt="Facebook logo">
+								<img width="28" height="28" src="http://portail2.gbif.fr/picture/Logo-Facebook.png" alt="Facebook logo">
 							</a> 
 						</li>
 					</ul>
@@ -322,9 +314,9 @@
 							<li ><a href="http://www.gbif.fr/user">Administration</a> </li>
 						</ul>
 					</div> 
-					<address class="footer-margin"> 
+					<address class="footer-margin">
 						<p>GBIF FRANCE ● MNHN G&eacuteologie ● 43 rue Buffon CP 48 &#150; 75005 Paris  &#150; France  &#150; <span style="line-height:1.6">T&eacutel. : +33 (0)1 40 79 80 65</span></p>
-					</address> 
+					</address>
 				</div>
 			</div>
 		</div> 
