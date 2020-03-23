@@ -103,7 +103,6 @@ build:
 	@docker build -t gbiffrance/ala-bieindex -t gbiffrance/ala-bieindex:1.0 bieindex
 	@docker build -t gbiffrance/ala-dyntaxaindex -t gbiffrance/ala-dyntaxaindex:1.0 dyntaxa-index
 	@docker build -t gbiffrance/ala-loggerservice -t gbiffrance/ala-loggerservice:1.0 loggerservice
-	@docker build -t gbiffrance/ala-loggerservicedb -t gbiffrance/ala-loggerservicedb:1.0 loggerservicedb
 
 push:
 	@echo "Pushing images to Dockerhub..."
@@ -116,4 +115,3 @@ push:
 	@docker push gbiffrance/ala-bieindex:1.0
 	@docker push gbiffrance/ala-dyntaxaindex:1.0
 	@docker push gbiffrance/ala-loggerservice:1.0
-	@docker push gbiffrance/ala-loggerservicedb:1.0
