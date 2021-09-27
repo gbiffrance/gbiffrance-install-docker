@@ -10,6 +10,7 @@ services:
     volumes:
       - ./env/.htpasswd:/etc/nginx/htpasswd
       - ./webserver/app_prod.conf:/etc/nginx/conf.d/app.conf:ro
+      - ./webserver/cors:/etc/nginx/conf.d/cors:ro
 
   collectory:
     image: gbiffrance/ala-collectory:1.1
@@ -19,9 +20,9 @@ services:
     links:
       - mysqldb
     environment:
-      - COLLECTORY_HOSTNAME=metadonnees2.gbif.fr
-      - PORTAL_HOSTNAME=portail2.gbif.fr
-      - HUBS_HOSTNAME=recherche2.gbif.fr
+      - COLLECTORY_HOSTNAME=metadonnees.gbif.fr
+      - PORTAL_HOSTNAME=portail.gbif.fr
+      - HUBS_HOSTNAME=recherche.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1056
     ports:
       - 1056:1056
@@ -44,10 +45,10 @@ services:
     image: gbiffrance/ala-biocacheservice:1.0
     container_name: biocacheservice
     extra_hosts:
-      - "cassandradb:192.168.0.11"
-      - "solr:192.168.0.10"
+      - "cassandradb:192.168.0.200"
+      - "solr:192.168.0.226"
     environment:
-      - HUBS_HOSTNAME=portail2.gbif.fr
+      - HUBS_HOSTNAME=portail.gbif.fr
       - JAVA_OPTS=-Xmx2g -Xms128m -Xss256k -Djava.awt.headless=true
     volumes:
       - data_nameindex:/data/lucene/namematching
@@ -95,12 +96,12 @@ services:
       - data_nameindex:/data/lucene/namematching
 
   biocachebackend:
-    image: gbiffrance/ala-biocachebackend:1.0
+    image: gbiffrance/ala-biocachebackend:1.0-FIX
     container_name: biocachebackend
     command: tail -f /dev/null
     extra_hosts:
-      - "cassandradb:192.168.0.11"
-      - "solr:192.168.0.10"
+      - "cassandradb:192.168.0.200"
+      - "solr:192.168.0.226"
     environment:
       - BIOCACHE_MEMORY_OPTS=-Xmx10g -Xms10g -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1055
     ports:
@@ -109,7 +110,7 @@ services:
       - data_nameindex:/data/lucene/namematching
       - data_biocachebackend:/data
       - ./config/blacklistMediaUrls.txt:/data/biocache/config/blacklistMediaUrls.txt
-      - ./config/biocache-config.properties:/data/biocache/config/biocache-config.properties:ro
+      - ./config/biocache-config.properties:/data/biocache/config/biocache-config.properties
 
   static:
     image: nginx:alpine
@@ -136,7 +137,7 @@ services:
     links:
       - mysqldblogger
     environment:
-      - PORTAL_HOSTNAME=portail2.gbif.fr
+      - PORTAL_HOSTNAME=portail.gbif.fr
       - JAVA_OPTS=-Xmx1g -Xms128m -Xss256k -Djava.awt.headless=true
     env_file: ./env/.envlogger
     volumes:

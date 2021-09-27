@@ -16,7 +16,7 @@
 		<script type="text/javascript">
 			function totalRecord(){
 				var xhrs = new XMLHttpRequest();
-				xhrs.open('GET', 'http://recherche.togo2.gbif.fr/occurrences/search?q=*:*&facet=off&pageSize=0');
+				xhrs.open('GET', 'http://recherche.togo.gbif.fr/occurrences/search?q=*:*&facet=off&pageSize=0');
 				xhrs.addEventListener('readystatechange', function() {
     				if (xhrs.readyState === 4) {
     					console.log(xhrs.responseText);
@@ -30,7 +30,7 @@
 			}
 			function totalDataset(){
 				var xhr = new XMLHttpRequest();
-				xhr.open('GET', 'http://metadonnees2.gbif.fr/ws/dataResource');
+				xhr.open('GET', 'http://metadonnees.gbif.fr/ws/dataResource');
 				xhr.addEventListener('readystatechange', function() {
     				if (xhr.readyState === 4) {
         				var response = JSON.parse(xhr.responseText);
@@ -104,7 +104,7 @@
 									<li><a href="https://www.gbif.org/country/TG/about">Acc&egraves au portail togolais du GBIF</a></li>
 									<li><a href="http://www.gbif.org" target="_blank">Acc&egraves au portail international du GBIF</a></li>
 									<li><a href="https://gbif.univ-lome.tg/page/consult/astuces-dutilisation-du-gbiforg">Astuce d'utilisation du GBIF.org</a></li>
-									<li><a href="http://metadonnees2.gbif.fr/admin">Acc&egraves à l'administration du portail GBIF Togo</a></li>
+									<li><a href="http://metadonnees.gbif.fr/admin">Acc&egraves à l'administration du portail GBIF Togo</a></li>
 								</ul>	
 							</li>
 
@@ -174,7 +174,7 @@
 								<span class="divider">/</span>
 							</li>
 							<li>
-								<a href="http://portail.togo2.gbif.fr/">Consulter</a>
+								<a href="http://portail.togo.gbif.fr/">Consulter</a>
 								<span class="divider">/</span>
 							</li>
 							<li>
@@ -227,7 +227,7 @@
 
 
 					<div class="col-md-8 col-md-offset-2">
-						<form action="http://recherche.togo2.gbif.fr/occurrences/search?#tab_mapView" method="get" role="search">
+						<form action="http://recherche.togo.gbif.fr/occurrences/search?#tab_mapView" method="get" role="search">
 							<h2 id="input-group-h2"><span class="glyphicon glyphicon-question-sign brown"></span>  Consulter les <a href="http://recherche.togo.gbif.fr/occurrences/search?#tab_mapView" method="get" id="total-record-link"><span id="totalRecord" class="pink"></a></span> occurrences</h2>
 							<script type="text/javascript">totalRecord();</script>
 
@@ -239,7 +239,7 @@
 
 								</div>
 								<div class="col-md-3">
-									<a class="btn btn-default search-occurrence btn-lg" href="http://recherche.togo2.gbif.fr/search#advanceSearch">Recherche avancée</a>
+									<a class="btn btn-default search-occurrence btn-lg" href="http://recherche.togo.gbif.fr/search#advanceSearch">Recherche avancée</a>
 								</div>
 							</div>
 						</form>
@@ -254,7 +254,7 @@
 						<div class="thumbnail">
 							<h2 class="thumbnail-2"> Jeux de données</h2>
 							<script type="text/javascript">totalDataset();</script>
-							<!-- <a href="https://www.gbif.org/dataset/search?q=Benin">--><img src="picture/jeux-donnees.jpg" alt="Jeux de données"><!--</a>-->
+							<a href="https://www.gbif.org/dataset/search?publishing_country=TG"><img src="picture/jeux-donnees.jpg" alt="Jeux de données"></a>
 							<div class="caption">
 								<p>Accès aux données d'occurrences et informations sur les jeux de données publiés par les institutions ou collections participant au GBIF (licence, citation, etc.)</p>
 							</div>
@@ -264,7 +264,7 @@
 					<div class="col-sm-6 col-md-4">
 						<div class="thumbnail">
 							<h2 class="thumbnail-2">Espèces</h2>
-							<a href="https://www.gbif.org/species/search?q=Togo"><img src="picture/especes.jpg" alt="Espèces"></a>
+							<a href="https://www.gbif.org/species/search?q=Togo&qField=DESCRIPTION"><img src="picture/especes.jpg" alt="Espèces"></a>
 							<div class="caption">
 							<p>Accès à la liste des espèces animales et végétales faisant partie de la biodiversité du Togo et publiées par GBIF TOGO</p>
 							</div>
@@ -284,35 +284,35 @@
 
 				<div id="access" class="row">
 					<div class="col-sm-6 col-md-4">
-						<p><a href="http://metadonnees2.gbif.fr/datasetsTogo" id="btn-search-dataset" class="btn btn-primary bouton" role="button">Accéder aux jeux de données</a></p>
+						<p><a href="https://www.gbif.org/dataset/search?publishing_country=TG" id="btn-search-dataset" class="btn btn-primary bouton" role="button">Accéder aux jeux de données</a></p>
 					</div>
 					<div class="col-sm-6 col-md-4">
-						<p><a href="https://www.gbif.org/occurrence/search?country=BJ" id="btn-search-explorer" class="btn btn-primary bouton" role="button">Explorer les espèces</a></p>
+						<p><a href="https://www.gbif.org/species/search?q=Togo&qField=DESCRIPTION" id="btn-search-explorer" class="btn btn-primary bouton" role="button">Explorer les espèces</a></p>
 					</div>
 					<div class="col-sm-6 col-md-4">
-						<p><a href="https://www.gbif.org/occurrence/gallery?country=BJ" id="btn-search-meta" class="btn btn-primary bouton" role="button">Accéder aux images</a></p>
+						<p><a href="https://www.gbif.org/occurrence/gallery?country=TG" id="btn-search-meta" class="btn btn-primary bouton" role="button">Accéder aux images</a></p>
 					</div>
 				</div>
 
 				<div class="row">
 					<div class="col-md-3 vcenter">
 						<div>	<a href="http://www.ala.org.au/" target="_blank">
-							<img src="http://portail.togo2.gbif.fr/picture/ala-white.png" class="img-responsive center-block" alt="Atlas of Living Australia">
+							<img src="http://portail.togo.gbif.fr/picture/ala-white.png" class="img-responsive center-block" alt="Atlas of Living Australia">
 						</a> </div>
 					</div><!--
 					--><div class="col-md-3 vcenter">
 						<a href="https://crowdin.com/" target="_blank">
-							<img src="http://portail.togo2.gbif.fr/picture/crowdin-white.png" class="img-responsive center-block" alt="Crowdin">
+							<img src="http://portail.togo.gbif.fr/picture/crowdin-white.png" class="img-responsive center-block" alt="Crowdin">
 						</a>
 					</div><!--
 					--><div class="col-md-3 vcenter">
 						<a href="http://www.gbif.org/" target="_blank">
-							<img src="http://portail.togo2.gbif.fr/picture/GBIF-2015-full.jpg" class="img-responsive center-block" alt="GBIF">
+							<img src="http://portail.togo.gbif.fr/picture/GBIF-2015-full.jpg" class="img-responsive center-block" alt="GBIF">
 						</a>
 					</div><!--
 					--><div class="col-md-3 vcenter">
 						<a href= "https://gbif.univ-lome.tg/" target="_blank">
-							<img src="http://portail.togo2.gbif.fr/picture/logo_gbiftg.png" width="140" height="100" style="padding-bottom: 4%;" class="img-responsive center-block" alt="GBIF Togo">
+							<img src="http://portail.togo.gbif.fr/picture/logo_gbiftg.png" width="140" height="100" style="padding-bottom: 4%;" class="img-responsive center-block" alt="GBIF Togo">
 						</a>
 					</div>
 				</div>
@@ -326,12 +326,12 @@
 					<ul class="social_icons">
 						<li>
 							<a target="_blank" href="http://twitter.com/gbif" title="Rejoignez sous sur Twitter !">
-								<img width="28" height="28" src="http://portail.togo2.gbif.fr/picture/Logo-Twitter-white.png" alt="twitter logo">
+								<img width="28" height="28" src="http://portail.togo.gbif.fr/picture/Logo-Twitter-white.png" alt="twitter logo">
 							</a>
 						</li>
 						<li>
 							<a target="_blank" title="Page Facebook du GBIF" href="https://www.facebook.com/gbifnews">
-								<img width="28" height="28" src="http://portail.togo2.gbif.fr/picture/Logo-Facebook.png" alt="Facebook logo">
+								<img width="28" height="28" src="http://portail.togo.gbif.fr/picture/Logo-Facebook.png" alt="Facebook logo">
 							</a> 
 						</li>
 					</ul>

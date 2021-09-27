@@ -11,7 +11,7 @@ services:
       - data_cassandra:/var/lib/cassandra/data
       - commitlog_cassandra:/var/lib/cassandra/commitlog
     environment:
-      - JVM_OPTS=-Xms15G -Xmx15G
+      - JVM_OPTS=-Xms15G -Xmx16G
     entrypoint: /bin/bash -c "cp /tmp/cassandra.yaml /etc/cassandra/cassandra.yaml && cp /tmp/cassandra-env.sh /etc/cassandra/cassandra-env.sh && /entrypoint-wrap.sh"
 
 volumes:
